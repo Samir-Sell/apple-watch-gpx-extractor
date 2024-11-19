@@ -6,8 +6,6 @@ using GeoJSON.Net.Geometry;
 using GPXReaderLib.Models;
 using Newtonsoft.Json;
 
-
-
 class Program
 {
     public static void Main(string[] args){
@@ -15,7 +13,7 @@ class Program
         string zipFilePath;
         string outputFolder;
         string fileType;
-
+        
         try
         {
             ArgsLengthCheck(args);
@@ -47,12 +45,12 @@ class Program
         FeatureCollection featureCollection = new FeatureCollection();
         foreach (ZipArchiveEntry entry in watchArchive.Entries)
         {
-            if (entry.FullName.EndsWith(".gpx"))
+            if (entry.FullName.EndsWith(Constants.Gpx.FileExtension))
             {
                 using StreamReader xmlReader = new StreamReader(entry.Open());
                 XDocument gpxFile = XDocument.Load(xmlReader);
                 XmlNamespaceManager r = new XmlNamespaceManager(new NameTable());
-                r.AddNamespace("p", "http://www.topografix.com/GPX/1/1");
+                r.AddNamespace("p", Constants.Gpx.NamespaceUri);
                 GPXReaderLib.GpxReader gpxReader = new GPXReaderLib.GpxReader(gpxFile, r);
                 IEnumerable<TrackPoint> trackPoints = gpxReader.GetGpxCoordinates();
 
@@ -65,8 +63,8 @@ class Program
                 }
                 LineString lineString = new LineString(coordinates);
                 Dictionary<string, object> properties = new Dictionary<string, object>();
-                properties["name"] = gpxReader.GetGpxName();
-                properties["elevation_gain"] = gpxReader.GetElevationGain();
+                properties[Constants.GeoJson.Name] = gpxReader.GetGpxName();
+                properties[Constants.GeoJson.ElevationGain] = gpxReader.GetElevationGain();
 
 
                 Feature feature = new Feature(lineString, properties);
@@ -82,12 +80,12 @@ class Program
     {
         if (args.Length > 3)
         {
-            throw new ArgumentException("Cannot provide more than 3 arguments");
+            throw new ArgumentException("Too many arguments. Usage: <zipfile> <outputFolder> <fileType>");
         }
 
         if (args.Length < 2)
         {
-            throw new ArgumentException("Need to provide zipefile and outputFolder.");
+            throw new ArgumentException("Insufficient arguments. Provide <zipfile> and <outputFolder>.");
         }
     }
 
@@ -97,19 +95,28 @@ class Program
         {
             throw new ArgumentException("Zip file must be a valid .zip");
         }
+
+        if (!File.Exists(zipFilePath))
+        {
+            throw new FileNotFoundException($"The zip file at '{zipFilePath}' does not exist.");
+        }
     }
 
     private static void FolderCheck(string outputFolder)
     {
-        if (Directory.Exists(outputFolder) == false)
+        if (!Directory.Exists(outputFolder))
         {
             try
             {
                 Directory.CreateDirectory(outputFolder);
             }
-            catch (Exception ex)
+            catch (UnauthorizedAccessException)
             {
-                Console.Error.WriteLine(ex);
+                throw new ArgumentException($"Insufficient permissions to create directory: {outputFolder}");
+            }
+            catch (IOException ex)
+            {
+                throw new ArgumentException($"Error creating directory: {outputFolder}. Details: {ex.Message}");
             }
         }
     }
@@ -122,4 +129,20 @@ class Program
         Console.WriteLine("  <fileType>      Optional file type. Default is geojson. Currently, does not work");
     }
 
+}
+
+public static class Constants
+{
+    public static class GeoJson
+    {
+        public const string Name = "name";
+        public const string ElevationGain = "elevation_gain";
+        public const string FileExtension = ".geojson";
+    }
+
+    public static class Gpx
+    {
+        public const string NamespaceUri = "http://www.topografix.com/GPX/1/1";
+        public const string FileExtension = ".gpx";
+    }
 }
