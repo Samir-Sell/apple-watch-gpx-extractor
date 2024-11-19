@@ -11,8 +11,13 @@ The tool accepts 3 parameters.
 
 `apple-watch-gpx-extractor.exe <zipfile> <outputFolder> <fileType>`
 
-
 ### Usage
 ```bash
 apple-watch-gpx-extractor.exe "path/to/zip/file.zip" "path/to/directory"
 ```
+
+### How To Extract Apple Health Data
+- Go to Health App on Iphone
+- Click pciture or initials on top right of the app
+- Scroll to the bottom of the page
+- Click "Export All Health Data"
