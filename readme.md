@@ -1,6 +1,8 @@
 # apple-watch-gpx-extractor
 
-A simple pet project to quickly allow users to extract all of their gpx data from Apple Health into a single GIS file. Currently the only export file supported is a GeoJSON file format. Simple acquire the executable and call it with your desired positional parameters. The GIS data is all generated from .gpx files found in the Apple Health export. The data is .GPX which is automatically assumed to be SRID 4326 ([WGS 1984](https://epsg.io/4326)).
+A simple pet project to quickly allow users to extract all of their gpx data from Apple Health into a single GIS file. Currently the only export file supported is a GeoJSON file format. Simple acquire the executable and call it with your desired positional parameters. The GIS data is all generated from .gpx files found in the Apple Health export. The data is .GPX which is automatically assumed to be SRID 4326 ([WGS 1984](https://epsg.io/4326)). 
+
+Built with Dotnet 9.0
 
 ### Parameters
 The tool accepts 3 parameters. 
@@ -16,11 +18,17 @@ The tool accepts 3 parameters.
 apple-watch-gpx-extractor.exe "path/to/zip/file.zip" "path/to/directory"
 ```
 
+## Tutorials and FAQ
+
 ### How To Extract Apple Health Data
 - Go to Health App on Iphone
 - Click pciture or initials on top right of the app
 - Scroll to the bottom of the page
 - Click "Export All Health Data"
+
+### How to Process
+- If you are not C# savvy, download the "apple-watch-gpx-extractor.exe" and refer to the usage section above.
+- You can also just download the zipfile for a contained version that is slightly more lightweight but does not combine all files into one folder.
 
 ### After Extraction (AKA: What the Hell is a .geoJSON?)
 This is for users who have no idea how to handle a .geojson file or for users who do not have local software to handle .geojson files.
