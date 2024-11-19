@@ -119,7 +119,7 @@ class Program
         Console.WriteLine("Usage: apple-watch-gpx-extractor <zipfile> <outputFolder> <fileType>");
         Console.WriteLine("  <zipefile>      The full path to the zip file of apple health data");
         Console.WriteLine("  <outputFolder>  The folder to output processed data. Does not need to exist.");
-        Console.WriteLine("  <fileType>      Optional file type. Default is geojson");
+        Console.WriteLine("  <fileType>      Optional file type. Default is geojson. Currently, does not work");
     }
 
 }
